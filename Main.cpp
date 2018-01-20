@@ -1,7 +1,8 @@
-//  Parser.cpp
-//  ece241_lab2_parser
 //
-//  Created by Hooman Tahmasebipour on September 26, 2017, 1:47 PM.
+//  Main.cpp
+//  ece244_lab4
+//
+//  Created by Hooman Tahmasebipour on 2017-11-07.
 //  Copyright © 2017 Hooman Tahmasebipour. All rights reserved.
 //
 
@@ -11,41 +12,47 @@
 #include <sstream>
 #include <string>
 
-#include "Resistor.h"
-#include "Node.h"
-#include "Rparser.h"
-
-#define MIN_NODE_NUMBER 0
+#include "Resistor.hpp"
+#include "ResistorList.hpp"
+#include "Node.hpp"
+#include "NodeList.hpp"
+#include "Rparser.hpp"
 
 using namespace std;
 
 int main(int argc, char** argv) {
     string line, command, rest;
+    NodeList network;
+    
     cout << "> ";
     getline(cin, line);
-    bool noInserts = true;
     
     while (!cin.eof()) {
         stringstream lineStream (line);
         lineStream >> command;
-        if (command == "maxVal") {
-            maxVal(lineStream, noInserts);
-        }
-        else if (command == "insertR") {
-            insertR(lineStream, noInserts);
-            noInserts = false;
+        if (command == "insertR") {
+            insertR(lineStream, network);
         }
         else if (command == "modifyR") {
-            modifyR(lineStream);
+            modifyR(lineStream, network);
         }
         else if (command == "printR") {
-            printR(lineStream);
+            printR(lineStream, network);
         }
         else if (command == "printNode") {
-            printNode(lineStream);
+            printNode(lineStream, network);
         }
         else if (command == "deleteR") {
-            deleteR(lineStream);
+            deleteR(lineStream, network);
+        }
+        else if (command == "setV") {
+            setV(lineStream, network);
+        }
+        else if (command == "unsetV") {
+            unsetV(lineStream, network);
+        }
+        else if (command == "solve") {
+            solve(network);
         }
         else { // if the command matches none of the above, it is invalid
             cout << "Error: invalid command\n";
@@ -53,10 +60,9 @@ int main(int argc, char** argv) {
         cout << "> ";
         getline(cin, line);
     }
-
-    clearAtExit();
     
     return 0;
 }
+
 
 

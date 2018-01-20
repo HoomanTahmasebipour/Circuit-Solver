@@ -1,58 +1,76 @@
 //
 //  Resistor.cpp
-//  ece244_lab3_inpt&store
+//  ece244_lab4
 //
-//  Created by Hooman Tahmasebipour on 2017-10-15.
+//  Created by Hooman Tahmasebipour on 2017-11-07.
 //  Copyright © 2017 Hooman Tahmasebipour. All rights reserved.
 //
 
-#include "Resistor.h"
-#include "Rparser.h"
+#include "Resistor.hpp"
 
 Resistor::Resistor() {
-    // do nothing
+  // default constructor, doesnt do SHIT
 }
 
-Resistor::Resistor(int rIndex_,string name_,double resistance_,int endpoints_[2]) {
-    resIndex = rIndex_;
-    name = name_;
-    resistance = resistance_;
-    endpointNodeIDs[0] = endpoints_[0];
-    endpointNodeIDs[1] = endpoints_[1];
+Resistor::Resistor (string name, int nodeID1, int nodeID2, double resValue) {
+    // second constructor, takes everything but next and intializes it. this is done because we want
+    // to be able to set next case by case, and not be stuck with a universal implementaion of it
+    label = name;
+    endpoints[0] = nodeID1;
+    endpoints[1] = nodeID2;
+    resistance = resValue;
+    next = NULL;
 }
 
-Resistor::~Resistor() {
-    // do nothing
+Resistor::~Resistor(){
+    if (next != NULL) {
+        delete next;
+        next = NULL;
+    }
+} // destructor must do deep deletion, ie do "if (next != NULL) delete next"
+
+Resistor* Resistor::getNext() const {
+    return next;
 }
 
-string Resistor::getName() const{
-    
-    return name;
-}
-
-double Resistor::getResistance() const{
-    
+double Resistor::getResistance() const {
     return resistance;
 }
 
+string Resistor::getLabel() const {
+    return label;
+}
+
 int Resistor::getEndPoint1() const {
-    
-    return endpointNodeIDs[0];
+    return endpoints[0];
 }
 
 int Resistor::getEndPoint2() const {
-    
-    return endpointNodeIDs[1];
+    return endpoints[1];
 }
 
-void Resistor::setResistance (double resistance_) {
-    resistance = resistance_;
-    
-    return;
+void Resistor::setLabel (string name) {
+    label = name;
 }
 
+void Resistor::setEndPoints (int ID1, int ID2) {
+    endpoints[0] = ID1;
+    endpoints[1] = ID2;
+}
 
+void Resistor::setResistance (double resValue){
+    resistance = resValue;
+}
 
+void Resistor::createNext (string name, int nodeID1, int nodeID2, double resValue) {
+    // pass in the necessary components of a resistor, and create this resistor
+    next = new Resistor (name, nodeID1, nodeID2, resValue);
+}
 
+void Resistor::setNext (Resistor* & link) {
+    next = link;
+}
 
-
+void Resistor::setNextToNULL() {
+    next = NULL;
+}
